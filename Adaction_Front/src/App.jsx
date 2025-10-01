@@ -2,19 +2,23 @@ import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
-  const [data, setData] = useState(null)
+  const [volunteers, setVolunteers] = useState(null)
 
   useEffect(() => {
-    fetch("/api/hello") 
+    fetch("/Adaction/Volunteers") 
       .then(res => res.json())
-      .then(data => setData(data))
+      .then(data => setVolunteers(data))
       .catch(err => console.error(err));
   }, []);
 
   return (
-    <div>
-      <h1>Message du backend :</h1>
-      <p>{data ? JSON.stringify(data) : "Chargement..."}</p>
+<div>
+      <h1>Liste des bénévoles</h1>
+      <ul>
+        {volunteers.map(v => (
+          <li key={v.id}>{v.firstname} {v.lastname} - {v.email}</li>
+        ))}
+      </ul>
     </div>
   );
 }
