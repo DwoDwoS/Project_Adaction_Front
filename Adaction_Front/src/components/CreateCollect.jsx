@@ -5,12 +5,12 @@ function CreateCollect() {
   const [date, setDate] = useState("");
   const [cities, setCities] = useState([]);
   const [city_id, setCity_id] = useState("");
-  const [glassNb, setGlassNb] = useState("");
-  const [buttNb, setButtNb] = useState("");
-  const [plasticNb, setPlasticNb] = useState("");
-  const [electronicsNb, setElectronicsNb] = useState("");
-  const [othersNb, setOthersNb] = useState("");
-  const [volunteers, setVolunteers] = useState(1);
+  const [glass_nb, setGlass_nb] = useState("");
+  const [butt_nb, setButt_nb] = useState("");
+  const [plastic_nb, setPlastic_nb] = useState("");
+  const [electronics_nb, setElectronics_nb] = useState("");
+  const [others_nb, setOthers_nb] = useState("");
+  const [volunteer, setVolunteer] = useState(1);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/cities")
@@ -28,12 +28,12 @@ function CreateCollect() {
     const collectForm = {
       date,
       city_id: Number(city_id),
-      glassNb: Number(glassNb),
-      buttNb: Number(buttNb),
-      plasticNb: Number(plasticNb),
-      electronicsNb: Number(electronicsNb),
-      othersNb: Number(othersNb),
-      volunteers: Number(volunteers)
+      glass_nb: Number(glass_nb),
+      butt_nb: Number(butt_nb),
+      plastic_nb: Number(plastic_nb),
+      electronics_nb: Number(electronics_nb),
+      others_nb: Number(others_nb),
+      volunteer: { id: Number(volunteer) }
     };
 
     console.log("Données envoyées :", JSON.stringify(collectForm));
@@ -55,7 +55,7 @@ function CreateCollect() {
     <div className="CreateCollect">
       <h1>Enregistrer une collecte</h1>
       <form onSubmit={handleSubmit}>
-        <input type="hidden" value={volunteers} onChange={(e) => setVolunteers(e.target.value)} />
+        <input type="hidden" value={volunteer} onChange={(e) => setVolunteer(e.target.value)} />
         <label>Date</label>
         <input
           type="date"
@@ -85,36 +85,36 @@ function CreateCollect() {
           type="number"
           required
           placeholder="Verre"
-          value={glassNb}
-          onChange={(e) => setGlassNb(e.target.value)}
+          value={glass_nb}
+          onChange={(e) => setGlass_nb(e.target.value)}
         />
         <input
           type="number"
           required
           placeholder="Mégots"
-          value={buttNb}
-          onChange={(e) => setButtNb(e.target.value)}
+          value={butt_nb}
+          onChange={(e) => setButt_nb(e.target.value)}
         />
         <input
           type="number"
           required
           placeholder="Plastique"
-          value={plasticNb}
-          onChange={(e) => setPlasticNb(e.target.value)}
+          value={plastic_nb}
+          onChange={(e) => setPlastic_nb(e.target.value)}
         />
         <input
           type="number"
           required
           placeholder="Électronique"
-          value={electronicsNb}
-          onChange={(e) => setElectronicsNb(e.target.value)}
+          value={electronics_nb}
+          onChange={(e) => setElectronics_nb(e.target.value)}
         />
         <input
           type="number"
           required
           placeholder="Autres"
-          value={othersNb}
-          onChange={(e) => setOthersNb(e.target.value)}
+          value={others_nb}
+          onChange={(e) => setOthers_nb(e.target.value)}
         />
 
         <button>Enregistrer</button>
