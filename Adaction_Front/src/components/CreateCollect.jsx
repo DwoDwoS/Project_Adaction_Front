@@ -4,7 +4,7 @@ import '/src/App.css';
 function CreateCollect() {
   const [date, setDate] = useState("");
   const [cities, setCities] = useState([]);
-  const [cityId, setCityId] = useState("");
+  const [city_id, setCity_id] = useState("");
   const [glassNb, setGlassNb] = useState("");
   const [buttNb, setButtNb] = useState("");
   const [plasticNb, setPlasticNb] = useState("");
@@ -27,15 +27,16 @@ function CreateCollect() {
 
     const collectForm = {
       date,
-      cityId: Number(cityId),
+      city_id: Number(city_id),
       glassNb: Number(glassNb),
       buttNb: Number(buttNb),
       plasticNb: Number(plasticNb),
       electronicsNb: Number(electronicsNb),
-      othersNb: Number(othersNb)
+      othersNb: Number(othersNb),
+      volunteers: Number(volunteers)
     };
 
-    console.log("Données envoyées :", collectForm);
+    console.log("Données envoyées :", JSON.stringify(collectForm));
 
     fetch("http://localhost:8080/api/collects", {
       method: "POST",
@@ -68,13 +69,13 @@ function CreateCollect() {
           name="city"
           id="city"
           required
-          value={cityId}
-          onChange={(e) => setCityId(e.target.value)}
+          value={city_id}
+          onChange={(e) => setCity_id(e.target.value)}
         >
           <option value="">-- Sélectionnez une ville --</option>
-          {cities.map((city) => (
-            <option key={city.id} value={city.id}>
-              {city.name}
+          {cities.map((city_id) => (
+            <option key={city_id.id} value={city_id.id}>
+              {city_id.name}
             </option>
           ))}
         </select>
