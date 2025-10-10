@@ -18,6 +18,7 @@ function App() {
 
   return (
     <div>
+      <header className="header">Adaction</header>
       <ul>
         {wastes_types.length > 0 ? (
           wastes_types.map(w => (
