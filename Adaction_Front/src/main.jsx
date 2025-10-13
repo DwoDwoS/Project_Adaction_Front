@@ -8,7 +8,7 @@ import App from './App.jsx';
 import Login from './components/Login.jsx';
 import Dashboard from './components/Dashboard.jsx';
 import CreateCollect from './components/CreateCollect.jsx'; 
-// import CreateDonation from './components/CreateDonation.jsx';
+import CreateDonation from './components/CreateDonation.jsx';
 import CreateVolunteer from './components/CreateVolunteer.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <Route path="/login" element={<Login />} />
         <Route path="dashboard" element={<Dashboard />} />
         <Route path="collects" element={<CreateCollect />} />
-          {/* <Route path="donations" element={<CreateDonation />} /> */}
+        <Route path="donations" element={<CreateDonation />} />
         <Route path="volunteers" element={<CreateVolunteer />} />
       </Routes>
     </BrowserRouter>

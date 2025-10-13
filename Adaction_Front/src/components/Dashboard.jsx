@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 function Dashboard() {
   const [wasteData, setWasteData] = useState({
-    verre: 0,
     cigarettes: 0,
     plastique: 0,
+    verre: 0,
     electronique: 0,
     autre: 0
   })
@@ -58,9 +58,9 @@ function Dashboard() {
       const data = await response.json()
       
       setWasteData({
-        verre: data.verre || 0,
         cigarettes: data.cigarettes || 0,
         plastique: data.plastique || 0,
+        verre: data.verre || 0,
         electronique: data.electronique || 0,
         autre: data.autre || 0
       })
@@ -68,9 +68,9 @@ function Dashboard() {
       console.error('Erreur:', err)
       setError(err.message)
       setWasteData({
-        verre: 0,
         cigarettes: 0,
         plastique: 0,
+        verre: 0,
         electronique: 0,
         autre: 0
       })
@@ -108,23 +108,23 @@ function Dashboard() {
           <h2 className="card-header">Bonjour {volunteerName} !</h2>
           <div className="month-navigation">
             <button 
-                className="month-nav-btn" 
-                onClick={goToPreviousMonth}
-                aria-label="Mois précédent"
+              className="month-nav-btn" 
+              onClick={goToPreviousMonth}
+              aria-label="Mois précédent"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left" aria-hidden="true">
                 <path d="m15 18-6-6 6-6"></path>
-                </svg>
+              </svg>
             </button>
             <span className="current-month">{formatMonth(currentDate)}</span>
             <button 
-                className="month-nav-btn" 
-                onClick={goToNextMonth}
-                aria-label="Mois suivant"
+              className="month-nav-btn" 
+              onClick={goToNextMonth}
+              aria-label="Mois suivant"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right" aria-hidden="true">
                 <path d="m9 18 6-6-6-6"></path>
-                </svg>
+              </svg>
             </button>
           </div>
         </div>
@@ -136,7 +136,8 @@ function Dashboard() {
         </div>
       )}
 
-        <div className="waste-card">
+      <div className="waste-grid">
+                <div className="waste-card">
           <div className="waste-info">
             <h3>Verres</h3>
             <p className="waste-count">
@@ -145,7 +146,6 @@ function Dashboard() {
           </div>
         </div>
 
-      <div className="waste-grid">
         <div className="waste-card">
           <div className="waste-info">
             <h3>Mégots de cigarettes</h3>
@@ -186,4 +186,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard;
+export default Dashboard
