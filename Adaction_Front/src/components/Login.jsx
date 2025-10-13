@@ -5,18 +5,6 @@ function Login(){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-  //   useEffect(() => {
-  //   fetch("http://localhost:8080/api/login")
-  //     .then(res => {
-  //       if (!res.ok) {
-  //         throw new Error("Erreur serveur : " + res.status);
-  //       }
-  //       return res.json();
-  //     })
-  //     .then(data => setWastes_types(data))
-  //     .catch(err => console.error("Erreur de fetch :", err));
-  // }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
