@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router';
-import '/src/App.css';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import "/src/App.css";
 
 function CreateCollect() {
   const [date, setDate] = useState("");
@@ -12,12 +12,28 @@ function CreateCollect() {
   const [electronics_nb, setElectronics_nb] = useState("");
   const [others_nb, setOthers_nb] = useState("");
   const [wastes_types, setWastes_types] = useState([]);
-  const [volunteer, setVolunteer] = useState(1);
+  const [volunteer, setVolunteer] = useState(null);
+  const [volunteerName, setVolunteerName] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
   const labelId1 = wastes_types.find((type) => type.id === 1)?.label;
   const labelId2 = wastes_types.find((type) => type.id === 2)?.label;
   const labelId3 = wastes_types.find((type) => type.id === 3)?.label;
-  const labelId4 = wastes_types.find((type) => type.id === 4)?.label;
-  const labelId5 = wastes_types.find((type) => type.id === 5)?.label;
+  const labelId4 = wastes_types.find((type) => type.id === 5)?.label;
+  const labelId5 = wastes_types.find((type) => type.id === 6)?.label;
+  const increment = (setter, value) => setter(Number(value) + 1);
+  const decrement = (setter, value) => setter(Math.max(0, value - 1));
+  useEffect(() => {
+    const storedVolunteerId = sessionStorage.getItem("volunteerId");
+    const storedVolunteerName = sessionStorage.getItem("volunteerName");
+
+    if (storedVolunteerId) {
+      setVolunteer(parseInt(storedVolunteerId));
+      setVolunteerName(storedVolunteerName || "Volontaire");
+    }
+  }, []);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/cities")
@@ -59,17 +75,38 @@ function CreateCollect() {
 
     console.log("Données envoyées :", JSON.stringify(collectForm));
 
-    fetch("http://localhost:8080/api/collects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(collectForm),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur : " + res.status);
-        return res.json();
-      })
-      .then(() => console.log("Nouvelle collecte ajoutée"))
-      .catch((err) => console.error("Erreur POST :", err));
+    try {
+      const response = await fetch("http://localhost:8080/api/collects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(collectForm),
+      });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'enregistrement de la collecte");
+      }
+
+      await response.json();
+      console.log("Nouvelle collecte ajoutée");
+      setSuccess(true);
+
+      setDate("");
+      setCity_id("");
+      setGlass_nb("");
+      setButt_nb("");
+      setPlastic_nb("");
+      setElectronics_nb("");
+      setOthers_nb("");
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 2000);
+    } catch (err) {
+      console.error("Erreur POST :", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -105,6 +142,7 @@ function CreateCollect() {
                     type="date"
                     required
                     value={date}
+                    disabled={loading}
                     onChange={(e) => setDate(e.target.value)}
                   />
                 </div>
@@ -136,11 +174,12 @@ function CreateCollect() {
                     required
                     value={city_id}
                     onChange={(e) => setCity_id(e.target.value)}
+                    disabled={loading}
                   >
                     <option value="">-- Sélectionnez une ville --</option>
-                    {cities.map((city_id) => (
-                      <option key={city_id.id} value={city_id.id}>
-                        {city_id.name}
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        {city.name}
                       </option>
                     ))}
                   </select>
@@ -152,15 +191,16 @@ function CreateCollect() {
                       <button
                         type="button"
                         className="waste-type-btn"
-                        required
-                        placeholder="Verre"
-                        value={glass_nb}
-                        onChange={(e) => setGlass_nb(e.target.value)}
+                        onClick={() => increment(setButt_nb, butt_nb)}
                       >
-                        {labelId3}
+                        {labelId1}
                       </button>
                       <div className="flex items-center gap-2">
-                        <button className="waste-type-btn">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => decrement(setButt_nb, butt_nb)}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
@@ -181,9 +221,283 @@ function CreateCollect() {
                           min="0"
                           className="w-16 text-center"
                           type="number"
-                          value=""
+                          value={butt_nb}
+                          onChange={(e) => setButt_nb(Number(e.target.value))}
                         ></input>
-                        <button className="waste-type-btn">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => increment(setButt_nb, butt_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-plus text-gray-600"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        className="waste-type-btn"
+                        onClick={() => increment(setPlastic_nb, plastic_nb)}
+                      >
+                        {labelId2}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => decrement(setPlastic_nb, plastic_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-minus text-gray-400"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                          </svg>{" "}
+                        </button>
+                        <input
+                          min="0"
+                          className="w-16 text-center"
+                          type="number"
+                          value={plastic_nb}
+                          onChange={(e) =>
+                            setPlastic_nb(Number(e.target.value))
+                          }
+                        ></input>
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => increment(setPlastic_nb, plastic_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-plus text-gray-600"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        className="waste-type-btn"
+                        required
+                        placeholder="Verre"
+                        value={glass_nb}
+                        disabled={loading}
+                        min="0"
+                        onClick={() => increment(setGlass_nb, glass_nb)}
+                      >
+                        {labelId3}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => decrement(setGlass_nb, glass_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-minus text-gray-400"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                          </svg>{" "}
+                        </button>
+                        <input
+                          min="0"
+                          className="w-16 text-center"
+                          type="number"
+                          value={glass_nb}
+                          onChange={(e) => setGlass_nb(Number(e.target.value))}
+                        ></input>
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => increment(setGlass_nb, glass_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-plus text-gray-600"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        className="waste-type-btn"
+                        required
+                        placeholder="Verre"
+                        value={electronics_nb}
+                        disabled={loading}
+                        min="0"
+                        onClick={() =>
+                          increment(setElectronics_nb, electronics_nb)
+                        }
+                      >
+                        {labelId4}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() =>
+                            decrement(setElectronics_nb, electronics_nb)
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-minus text-gray-400"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                          </svg>{" "}
+                        </button>
+                        <input
+                          min="0"
+                          className="w-16 text-center"
+                          type="number"
+                          value={electronics_nb}
+                          onChange={(e) =>
+                            setElectronics_nb(Number(e.target.value))
+                          }
+                        ></input>
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() =>
+                            increment(setElectronics_nb, electronics_nb)
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-plus text-gray-600"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <button
+                        type="button"
+                        className="waste-type-btn"
+                        required
+                        value={others_nb}
+                        onChange={(e) => setOthers_nb(e.target.value)}
+                        disabled={loading}
+                        min="0"
+                        onClick={() => increment(setOthers_nb, others_nb)}
+                      >
+                        {labelId5}
+                      </button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => decrement(setOthers_nb, others_nb)}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-minus text-gray-400"
+                            aria-hidden="true"
+                          >
+                            <path d="M5 12h14"></path>
+                          </svg>{" "}
+                        </button>
+                        <input
+                          min="0"
+                          className="w-16 text-center"
+                          type="number"
+                          value={others_nb}
+                          onChange={(e) => setOthers_nb(Number(e.target.value))}
+                        ></input>
+                        <button
+                          className="waste-type-btn"
+                          type="button"
+                          onClick={() => increment(setOthers_nb, others_nb)}
+                        >
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="16"
@@ -209,42 +523,27 @@ function CreateCollect() {
             </div>
           </div>
 
-          <input
-            type="number"
-            required
-            placeholder="Mégots"
-            value={butt_nb}
-            onChange={(e) => setButt_nb(e.target.value)}
-          />
-          <input
-            type="number"
-            required
-            placeholder="Plastique"
-            value={plastic_nb}
-            onChange={(e) => setPlastic_nb(e.target.value)}
-          />
-          <input
-            type="number"
-            required
-            placeholder="Électronique"
-            value={electronics_nb}
-            onChange={(e) => setElectronics_nb(e.target.value)}
-          />
-          <input
-            type="number"
-            required
-            placeholder="Autres"
-            value={others_nb}
-            onChange={(e) => setOthers_nb(e.target.value)}
-          />
-
-          <button>Enregistrer</button>
+          <button className="submit-btn" disabled={loading}>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="lucide lucide-save"
+              aria-hidden="true"
+            >
+              <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
+              <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
+              <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
+            </svg>
+            {loading ? "Enregistrement..." : "Enregistrer"}
+          </button>
         </div>
-        <input
-          type="hidden"
-          value={volunteer}
-          onChange={(e) => setVolunteer(e.target.value)}
-        />
       </form>
     </div>
   );
