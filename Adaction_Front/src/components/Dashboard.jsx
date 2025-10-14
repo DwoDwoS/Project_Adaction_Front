@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 
 function Dashboard() {
   const [wasteData, setWasteData] = useState({
+    verre: 0,
     cigarettes: 0,
     plastique: 0,
-    verre: 0,
     electronique: 0,
     autre: 0
   })
@@ -13,6 +14,7 @@ function Dashboard() {
   const [error, setError] = useState(null)
   const [volunteerId, setVolunteerId] = useState(null)
   const [volunteerName, setVolunteerName] = useState('GreenTrack')
+  const navigate = useNavigate()
 
   const formatMonth = (date) => {
     const months = [
@@ -23,19 +25,18 @@ function Dashboard() {
   }
 
   useEffect(() => {
-    // WIP: Need to implement a proper login system
-    // For now, we simulate a logged-in volunteer by storing their ID and name in localStorage
-    // In a real application, this would be handled via authentication tokens or sessions
-    const storedVolunteerId = localStorage.getItem('volunteerId')
-    const storedVolunteerName = localStorage.getItem('volunteerName')
+    const isAuthenticated = sessionStorage.getItem('isAuthenticated')
+    const storedVolunteerId = sessionStorage.getItem('volunteerId')
+    const storedVolunteerName = sessionStorage.getItem('volunteerName')
     
-    if (storedVolunteerId) {
-      setVolunteerId(parseInt(storedVolunteerId))
-      setVolunteerName(storedVolunteerName || 'Volontaire')
-    } else {
-      setVolunteerId(1)
+    if (!isAuthenticated || !storedVolunteerId) {
+      navigate('/login')
+      return
     }
-  }, [])
+    
+    setVolunteerId(parseInt(storedVolunteerId))
+    setVolunteerName(storedVolunteerName || 'Volontaire')
+  }, [navigate])
 
   const fetchWasteData = async (date, volId) => {
     if (!volId) return
@@ -58,9 +59,9 @@ function Dashboard() {
       const data = await response.json()
       
       setWasteData({
+        verre: data.verre || 0,
         cigarettes: data.cigarettes || 0,
         plastique: data.plastique || 0,
-        verre: data.verre || 0,
         electronique: data.electronique || 0,
         autre: data.autre || 0
       })
@@ -68,9 +69,9 @@ function Dashboard() {
       console.error('Erreur:', err)
       setError(err.message)
       setWasteData({
+        verre: 0,
         cigarettes: 0,
         plastique: 0,
-        verre: 0,
         electronique: 0,
         autre: 0
       })
@@ -106,26 +107,28 @@ function Dashboard() {
       <div className="card">
         <div className="dashboard-header">
           <h2 className="card-header">Bonjour {volunteerName} !</h2>
-          <div className="month-navigation">
-            <button 
-              className="month-nav-btn" 
-              onClick={goToPreviousMonth}
-              aria-label="Mois précédent"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left" aria-hidden="true">
-                <path d="m15 18-6-6 6-6"></path>
-              </svg>
-            </button>
-            <span className="current-month">{formatMonth(currentDate)}</span>
-            <button 
-              className="month-nav-btn" 
-              onClick={goToNextMonth}
-              aria-label="Mois suivant"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right" aria-hidden="true">
-                <path d="m9 18 6-6-6-6"></path>
-              </svg>
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="month-navigation">
+              <button 
+                className="month-nav-btn" 
+                onClick={goToPreviousMonth}
+                aria-label="Mois précédent"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-left" aria-hidden="true">
+                  <path d="m15 18-6-6 6-6"></path>
+                </svg>
+              </button>
+              <span className="current-month">{formatMonth(currentDate)}</span>
+              <button 
+                className="month-nav-btn" 
+                onClick={goToNextMonth}
+                aria-label="Mois suivant"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-chevron-right" aria-hidden="true">
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -137,7 +140,7 @@ function Dashboard() {
       )}
 
       <div className="waste-grid">
-                <div className="waste-card">
+        <div className="waste-card">
           <div className="waste-info">
             <h3>Verres</h3>
             <p className="waste-count">
@@ -175,7 +178,7 @@ function Dashboard() {
         
         <div className="waste-card">
           <div className="waste-info">
-            <h3>Autre</h3>
+            <h3>Autres</h3>
             <p className="waste-count">
               {loading ? 'Chargement...' : `${wasteData.autre} collectés`}
             </p>
