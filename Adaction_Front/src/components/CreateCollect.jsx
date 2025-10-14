@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import "/src/App.css";
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
+import '/src/App.css';
 
 function CreateCollect() {
   const [date, setDate] = useState("");
@@ -38,8 +39,11 @@ function CreateCollect() {
       .catch((err) => console.error("Erreur de fetch wastetype :", err));
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(false);
 
     const collectForm = {
       date,
