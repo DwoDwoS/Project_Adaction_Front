@@ -29,7 +29,7 @@ body {
 
 /* Input and Select styles */
 input[type='text'],
-input[type='date'],
+input[type="date"],
 input[type='email'],
 input[type='password'],
 input[type='number'],
@@ -43,6 +43,10 @@ select {
   transition: all 0.2s;
   background-color: white;
 }
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.5);
+}
+
 
 input:focus,
 select:focus {
@@ -89,6 +93,7 @@ footer {
   justify-content: center;
   width: 100%;
   text-align: center;
+  gap: 0.5rem;
 }
 
 /* Header */

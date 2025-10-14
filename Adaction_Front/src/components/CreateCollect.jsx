@@ -133,17 +133,17 @@ function CreateCollect() {
                   <line x1="12" x2="12" y1="8" y2="12"></line>
                   <line x1="12" x2="12.01" y1="16" y2="16"></line>
                 </svg>
-                Enregistrer une collecte
+              Enregistrer une collecte
               </h2>
               <div className="form-container">
                 <div>
                   <label className="form-label">Date *</label>
                   <input
                     type="date"
-                    required
                     value={date}
                     disabled={loading}
                     onChange={(e) => setDate(e.target.value)}
+                    required
                   />
                 </div>
                 <div className="flex flex-col gap-2">
