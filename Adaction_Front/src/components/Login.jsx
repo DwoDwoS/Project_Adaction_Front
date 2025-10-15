@@ -48,38 +48,41 @@ function Login() {
   }
 
   return (
-    <div>
-      <h2>Connexion</h2>
-      {error && (
-        <div style={{ color: 'red', padding: '0.5rem', marginBottom: '1rem' }}>
-          {error}
-        </div>
-      )}
-      <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          placeholder='Votre prénom'
-          required 
-          value={username} 
-          onChange={(e) => setUsername(e.target.value)}
-          disabled={loading}
-        />
-        <label>Prénom</label>
-        <input 
-          type="password" 
-          placeholder='Votre mot de passe'
-          required 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)}
-          disabled={loading}
-        />
-        <button className='submit-btn' type="submit" disabled={loading}>
-          {loading ? 'Connexion...' : 'Se connecter'}
-        </button>
-        <button type="button" onClick={() => navigate('/admin')}>
-          Gérer les bénévoles
-        </button>
-      </form>
+    <div className="main-content">
+      <div className="card">
+        <h2 className='card-header'>Connexion</h2>
+        {error && (
+          <div style={{ color: 'red', padding: '0.5rem', marginBottom: '1rem' }}>
+            {error}
+          </div>
+        )}
+        <form className='form-container' onSubmit={handleSubmit}>
+          <label className='form-label'>Prénom *</label>
+          <input 
+            type="text" 
+            placeholder='Votre prénom'
+            required 
+            value={username} 
+            onChange={(e) => setUsername(e.target.value)}
+            disabled={loading}
+          />
+          <label className='form-label'>Mot de passe *</label>
+          <input 
+            type="password" 
+            placeholder='Votre mot de passe'
+            required 
+            value={password} 
+            onChange={(e) => setPassword(e.target.value)}
+            disabled={loading}
+          />
+          <button className='submit-btn' type="submit" disabled={loading}>
+            {loading ? 'Connexion...' : 'Se connecter'}
+          </button>
+          <button className='submit-btn manage-btn' type="button" onClick={() => navigate('/admin')}>
+            Gérer les bénévoles
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
