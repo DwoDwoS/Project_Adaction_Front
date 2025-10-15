@@ -133,7 +133,7 @@ function CreateCollect() {
                   <line x1="12" x2="12" y1="8" y2="12"></line>
                   <line x1="12" x2="12.01" y1="16" y2="16"></line>
                 </svg>
-              Enregistrer une collecte
+                Enregistrer une collecte
               </h2>
               <div className="form-container">
                 <div>
@@ -521,7 +521,7 @@ function CreateCollect() {
                 </div>
               </div>
             </div>
-          
+
             <button className="submit-btn" disabled={loading}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -540,7 +540,7 @@ function CreateCollect() {
                 <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
                 <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
               </svg>
-              {loading ? "Enregistrement..." : "Enregistrer"}
+              Enregistrer
             </button>
           </div>
         </div>

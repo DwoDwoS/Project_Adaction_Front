@@ -11,6 +11,7 @@ import CreateDonation from './components/CreateDonation.jsx';
 import CreateVolunteer from './components/CreateVolunteer.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 import PutVolunteer from './components/PutVolunteer.jsx';
+import Navbar from './components/Navbar.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -24,6 +25,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           path="/dashboard" 
           element={
             <ProtectedRoute>
+              <Navbar/>
               <Dashboard />
             </ProtectedRoute>
           } 
@@ -32,6 +34,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           path="/collects" 
           element={
             <ProtectedRoute>
+              <Navbar/>
               <CreateCollect />
             </ProtectedRoute>
           } 
@@ -40,6 +43,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           path="/donations" 
           element={
             <ProtectedRoute>
+              <Navbar/>
               <CreateDonation />
             </ProtectedRoute>
           } 
@@ -48,6 +52,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           path="/volunteers" 
           element={
             <ProtectedRoute>
+              <Navbar/>
               <CreateVolunteer />
             </ProtectedRoute>
           } 
@@ -56,6 +61,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           path="/profil" 
           element={
             <ProtectedRoute>
+              <Navbar/>
               <PutVolunteer />
             </ProtectedRoute>
           } 
