@@ -6,6 +6,7 @@ function PutVolunteer() {
   const [volunteerId, setVolunteerId] = useState(null);
   const [volunteerName, setVolunteerName] = useState("");
   const [firstname, setFirstname] = useState("");
+  const [password, setPassword] = useState("");
   const [lastname, setLastname] = useState("");
   const [location, setLocation] = useState("");
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ function PutVolunteer() {
         setFirstname(data.firstname || "");
         setLastname(data.lastname || "");
         setLocation(data.location || "");
+        setPassword(date.password || "");
       })
       .catch((err) => console.error("Erreur de fetch volunteers :", err));
   }, [volunteerId]);
@@ -48,7 +50,7 @@ function PutVolunteer() {
         lastname,
         location,
         email: volunteer.email,
-        password: volunteer.password,
+        password,
       }),
     };
 
@@ -99,6 +101,15 @@ function PutVolunteer() {
               placeholder="Votre ville"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="form-label">Mot de passe</label>
+            <input
+              type="text"
+              placeholder="Votre mot de passe"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <button type="submit" className="submit-btn">
