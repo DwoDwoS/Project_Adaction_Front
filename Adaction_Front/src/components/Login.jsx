@@ -78,7 +78,7 @@ function Login() {
           <button className='submit-btn' type="submit" disabled={loading}>
             {loading ? 'Connexion...' : 'Se connecter'}
           </button>
-          <button className='submit-btn manage-btn' type="button" onClick={() => navigate('/admin')}>
+          <button className='submit-btn manage-btn' type="button" onClick={() => navigate('/manageVolunteers')}>
             Gérer les bénévoles
           </button>
         </form>
