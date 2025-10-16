@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
 import "./index.css";
 
-import App from "./App.jsx";
 import Login from "./components/Login.jsx";
 import Dashboard from "./components/Dashboard.jsx";
 import CreateCollect from "./components/CreateCollect.jsx";
@@ -13,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PutVolunteer from "./components/PutVolunteer.jsx";
 import Navbar from "./components/Navbar.jsx";
 import NavbarVolunteersLeaderboard from "./components/NavbarVolunteersLeaderboard.jsx";
+import GetVolunteers from "./components/GetVolunteers.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -23,8 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           element={
             <>
               <NavbarVolunteersLeaderboard />
-              <CreateVolunteer />
-              <App />
+              <GetVolunteers />
             </>
           }
         />
