@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreateVolunteer from "./CreateVolunteer.jsx";
 
 function GetVolunteers() {
   const [volunteers, setVolunteers] = useState([]);
@@ -18,6 +19,9 @@ function GetVolunteers() {
   return (
     <main className="main-content">
       <div className="card">
+        <div>
+          <CreateVolunteer />
+        </div>
         <div className="volunteers-list">
           {volunteers.length > 0 ? (
             volunteers.map((v) => (
