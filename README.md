@@ -192,7 +192,8 @@ Assurez-vous que toutes les variables d'environnement nécessaires sont correcte
 
 ##  Auteurs
 
-- **DwoDwoS** - [GitHub](https://github.com/DwoDwoS)
+- **Elouan** - [GitHub](https://github.com/DwoDwoS)
+- **Eliès** - [GitHub](https://github.com/Hellyes31)
 
 ## Liens utiles
 
