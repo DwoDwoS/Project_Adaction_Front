@@ -33,7 +33,7 @@ function PutVolunteer() {
         setFirstname(data.firstname || "");
         setLastname(data.lastname || "");
         setLocation(data.location || "");
-        setPassword(date.password || "");
+        setPassword(data.password || "");
       })
       .catch((err) => console.error("Erreur de fetch volunteers :", err));
   }, [volunteerId]);
@@ -108,7 +108,7 @@ function PutVolunteer() {
             <input
               type="text"
               placeholder="Votre mot de passe"
-              value={password}
+              // value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
