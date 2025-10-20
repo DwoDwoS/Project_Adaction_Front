@@ -6,11 +6,11 @@ function CreateCollect() {
   const [date, setDate] = useState("");
   const [cities, setCities] = useState([]);
   const [city_id, setCity_id] = useState("");
-  const [glass_nb, setGlass_nb] = useState("");
-  const [butt_nb, setButt_nb] = useState("");
-  const [plastic_nb, setPlastic_nb] = useState("");
-  const [electronics_nb, setElectronics_nb] = useState("");
-  const [others_nb, setOthers_nb] = useState("");
+  const [glass_nb, setGlass_nb] = useState(0);
+  const [butt_nb, setButt_nb] = useState(0);
+  const [plastic_nb, setPlastic_nb] = useState(0);
+  const [electronics_nb, setElectronics_nb] = useState(0);
+  const [others_nb, setOthers_nb] = useState(0);
   const [wastes_types, setWastes_types] = useState([]);
   const [volunteer, setVolunteer] = useState(null);
   const [volunteerName, setVolunteerName] = useState("");
@@ -24,7 +24,7 @@ function CreateCollect() {
   const labelId4 = wastes_types.find((type) => type.id === 5)?.label;
   const labelId5 = wastes_types.find((type) => type.id === 6)?.label;
   const increment = (setter, value) => setter(Number(value) + 1);
-  const decrement = (setter, value) => setter(Math.max(0, value - 1));
+  const decrement = (setter, value) => setter(Math.max(0, Number(value) - 1));
   useEffect(() => {
     const storedVolunteerId = sessionStorage.getItem("volunteerId");
     const storedVolunteerName = sessionStorage.getItem("volunteerName");
