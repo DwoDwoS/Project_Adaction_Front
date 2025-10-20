@@ -1,12 +1,110 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import CreateVolunteer from "./CreateVolunteer.jsx";
 
 function GetVolunteers() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [volunteers, setVolunteers] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [city_id, setCity_id] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [volunteerId, setVolunteerId] = useState(null);
+  const [volunteerName, setVolunteerName] = useState("");
   const [firstname, setFirstname] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [location, setLocation] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedVolunteerId = sessionStorage.getItem("volunteerId");
+    const storedVolunteerName = sessionStorage.getItem("volunteerName");
+
+    if (storedVolunteerId) {
+      setVolunteerId(parseInt(storedVolunteerId));
+      setVolunteerName(storedVolunteerName || "Volontaire");
+    }
+  }, []);
+
+  const handleDelete = async (id) => {
+    const confirmation = window.confirm(
+      "Voulez vous vraiment supprimer ce bénévole ?"
+    );
+    if (!confirmation) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/volunteers/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Erreur lors de la suppression du bénévole.");
+      }
+
+      setVolunteers((prevVolunteers) =>
+        prevVolunteers.filter((v) => v.id !== id)
+      );
+
+      setSuccessMessage("Le bénévole a bien été supprimé !");
+      setTimeout(() => setSuccessMessage(""), 10000);
+    } catch (error) {
+      console.error("Erreur lors de la suppression :", error);
+      setSuccessMessage("Une erreur s'est produite lors de la suppression.");
+    }
+  };
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const requestOptions = {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        firstname,
+        lastname,
+        location,
+        email,
+        password,
+      }),
+    };
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/volunteers/${volunteerId}`,
+        requestOptions
+      );
+      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
+
+      const data = await response.json();
+      setVolunteers(data);
+      setSuccessMessage(
+        `Le bénévole ${firstname} ${lastname} a bien été modifié !`
+      );
+
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+
+      navigate("/manageVolunteers");
+      await fetch("http://localhost:8080/api/volunteers")
+        .then((res) => res.json())
+        .then((data) => setVolunteers(data));
+    } catch (error) {
+      console.error("Erreur lors de l'ajout:", error);
+      setSuccessMessage("Une erreur s'est produite lors de la modification.");
+    }
+  };
+
+  const handleClose = () => {
+    setIsModalOpen(false);
+    setFirstname("");
+    setLastname("");
+    setEmail("");
+    setPassword("");
+    setLocation("");
+    setSuccessMessage("");
+  };
 
   useEffect(() => {
     fetch("http://localhost:8080/api/volunteers")
@@ -64,10 +162,20 @@ function GetVolunteers() {
                       {v.firstname} {v.lastname}
                     </h3>
                     <p>{v.location}</p>
-                    
                   </div>
                   <div className="volunteer-actions">
-                    <button className="action-btn edit-btn">
+                    <button
+                      className="action-btn edit-btn"
+                      onClick={() => {
+                        setVolunteerId(v.id);
+                        setFirstname(v.firstname);
+                        setLastname(v.lastname);
+                        setEmail(v.email);
+                        setLocation(v.location);
+                        setPassword(v.password || "");
+                        setIsModalOpen(true);
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -84,7 +192,10 @@ function GetVolunteers() {
                         <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"></path>
                       </svg>
                     </button>
-                    <button className="action-btn delete-btn">
+                    <button
+                      className="action-btn delete-btn"
+                      onClick={() => handleDelete(v.id)}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -111,6 +222,83 @@ function GetVolunteers() {
             ))
           ) : (
             <p>Aucun bénévole trouvé.</p>
+          )}
+          {isModalOpen && (
+            <div className="modal-overlay" onClick={handleClose}>
+              <div className="modal" onClick={(e) => e.stopPropagation()}>
+                <h3>Modifier un.e bénévole</h3>
+
+                {successMessage && (
+                  <div
+                    style={{
+                      padding: "12px",
+                      marginBottom: "16px",
+                      backgroundColor: successMessage.includes("erreur")
+                        ? "#fee"
+                        : "#d4edda",
+                      color: successMessage.includes("erreur")
+                        ? "#c00"
+                        : "#155724",
+                      borderRadius: "4px",
+                      border: `1px solid ${
+                        successMessage.includes("erreur") ? "#fcc" : "#c3e6cb"
+                      }`,
+                    }}
+                  >
+                    {successMessage}
+                  </div>
+                )}
+
+                <form onSubmit={handleUpdate}>
+                  <label>Prénom</label>
+                  <input
+                    type="text"
+                    required
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                  />
+                  <label>Nom</label>
+                  <input
+                    type="text"
+                    required
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                  />
+                  <label>Email</label>
+                  <input
+                    type="text"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <label>Mot de passe</label>
+                  <input
+                    type="text"
+                    required
+                    onChange={(e) => setPassword(e.target.value)}
+                  />
+                  <label>Localisation</label>
+                  <input
+                    type="text"
+                    required
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                  />
+                  <div className="modal-actions">
+                    <button type="submit" className="submit-btn">
+                      Modifier
+                    </button>
+                    <button
+                      type="button"
+                      className="submit-btn manage-btn"
+                      onClick={handleClose}
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
           )}
         </div>
       </div>

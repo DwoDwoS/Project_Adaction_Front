@@ -43,6 +43,7 @@ select {
   transition: all 0.2s;
   background-color: white;
 }
+
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.5);
 }
@@ -188,16 +189,16 @@ footer {
 }
 
 /* Ajout des styles pour la mise en page 50/50 */
-.waste-types-grid > div {
+.waste-types-grid>div {
   display: flex;
   gap: 0.5rem;
 }
 
-.waste-types-grid > div > button {
+.waste-types-grid>div>button {
   flex: 1;
 }
 
-.waste-types-grid > div > div {
+.waste-types-grid>div>div {
   flex: 1;
   display: flex;
   justify-content: flex-end;
@@ -217,26 +218,32 @@ footer {
   background-color: #dbeafe;
   color: #1e40af;
 }
+
 .badge-glass {
   background-color: #dcfce7;
   color: #166534;
 }
+
 .badge-metal {
   background-color: #f3f4f6;
   color: #374151;
 }
+
 .badge-paper {
   background-color: #fef3c7;
   color: #92400e;
 }
+
 .badge-organic {
   background-color: #fed7aa;
   color: #c2410c;
 }
+
 .badge-electronic {
   background-color: #e9d5ff;
   color: #7c2d12;
 }
+
 .badge-other {
   background-color: #fecaca;
   color: #991b1b;
@@ -347,6 +354,7 @@ footer {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -356,9 +364,11 @@ footer {
   0% {
     opacity: 1;
   }
+
   70% {
     opacity: 1;
   }
+
   100% {
     opacity: 0;
   }
@@ -383,9 +393,10 @@ footer {
     gap: 2rem;
   }
 
-  .main-content > .card {
+  .main-content>.card {
     flex: 1;
-    min-width: 0; /* Pour éviter le débordement */
+    min-width: 0;
+    /* Pour éviter le débordement */
   }
 
   .waste-types-grid {
@@ -405,18 +416,26 @@ footer {
   margin: 0 auto;
   display: flex;
   justify-content: center;
+  /* justify-content: space-evenly; */
   gap: 2rem;
 }
 
 .navbar-link {
+  flex: 1;
+
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.5rem;
   padding: 0.5rem 0.8rem;
   color: var(--text-secondary);
   text-decoration: none;
   border-radius: 0.5rem;
   transition: all 0.2s;
+}
+
+.navbar-link span {
+  white-space: nowrap;
 }
 
 .navbar-link:hover,
