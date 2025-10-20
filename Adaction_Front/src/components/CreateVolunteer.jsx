@@ -55,8 +55,7 @@ function CreateVolunteer() {
 
       {isModalOpen && (
         <div className="modal-overlay" onClick={handleClose}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="CreateVolunteer modal">
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
               <h3>Ajouter un.e bénévole</h3>
 
               {successMessage && (
@@ -114,7 +113,6 @@ function CreateVolunteer() {
                 </div>
               </form>
             </div>
-          </div>
         </div>
       )}
     </div>
