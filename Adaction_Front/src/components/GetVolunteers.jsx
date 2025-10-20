@@ -1,8 +1,12 @@
-import { useEffect, useState } from "react";
-import CreateVolunteer from "./CreateVolunteer.jsx";
+import { useEffect, useState, useMemo } from "react";
+import CreateVolunteer from "./CreateVolunteer";
+import VolunteersFilters from "./VolunteersFilters.jsx";
 
 function GetVolunteers() {
   const [volunteers, setVolunteers] = useState([]);
+  const [cities, setCities] = useState([]);
+  const [city_id, setCity_id] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:8080/api/volunteers")
@@ -16,23 +20,56 @@ function GetVolunteers() {
       .catch((err) => console.error("Erreur de fetch :", err));
   }, []);
 
+  useEffect(() => {
+    fetch("http://localhost:8080/api/cities")
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur serveur : " + res.status);
+        return res.json();
+      })
+      .then((data) => setCities(data))
+      .catch((err) => console.error("Erreur de fetch cities :", err));
+  }, []);
+
+  const filteredVolunteers = useMemo(() => {
+    return volunteers.filter((volunteer) => {
+      const matchesSearch = searchTerm === "" || 
+        volunteer.firstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        volunteer.lastname?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      let matchesCity = true;
+        if (city_id && city_id !== "") {
+          const selectedCity = cities.find(city => city.id.toString() === city_id);
+          if (selectedCity) {
+            matchesCity = volunteer.location === selectedCity.name;
+          }
+        }
+
+      return matchesSearch && matchesCity;
+    });
+  }, [volunteers, searchTerm, city_id, cities]);
+
   return (
     <main className="main-content">
       <div className="card">
-        <div>
+        <div className="volunteers-actions">
           <CreateVolunteer />
+          <VolunteersFilters 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            city_id={city_id}
+            setCity_id={setCity_id}
+            cities={cities}
+            />
         </div>
         <div className="volunteers-list">
-          {volunteers.length > 0 ? (
-            volunteers.map((v) => (
-              <div key={v.id}>
-                <div className="volunteer-item">
+          {filteredVolunteers.length > 0 ? (
+            filteredVolunteers.map((v) => (
+              <div key={v.id} className="volunteer-item">
                   <div className="volunteer-info">
                     <h3>
                       {v.firstname} {v.lastname}
                     </h3>
                     <p>{v.location}</p>
-                    
                   </div>
                   <div className="volunteer-actions">
                     <button className="action-btn edit-btn">
@@ -74,11 +111,13 @@ function GetVolunteers() {
                       </svg>
                     </button>
                   </div>
-                </div>
               </div>
             ))
           ) : (
-            <p>Aucun bénévole trouvé.</p>
+            <p>
+              {filteredVolunteers.length === 0 
+                ? "Aucun bénévole trouvé." 
+                : "Aucun bénévole ne correspond aux critères de recherche."}</p>
           )}
         </div>
       </div>
