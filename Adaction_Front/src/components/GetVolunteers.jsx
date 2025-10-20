@@ -118,11 +118,39 @@ function GetVolunteers() {
       .catch((err) => console.error("Erreur de fetch :", err));
   }, []);
 
+  useEffect(() => {
+    fetch("http://localhost:8080/api/cities")
+      .then((res) => {
+        if (!res.ok) throw new Error("Erreur serveur : " + res.status);
+        return res.json();
+      })
+      .then((data) => setCities(data))
+      .catch((err) => console.error("Erreur de fetch cities :", err));
+  }, []);
+
   return (
     <main className="main-content">
       <div className="card">
-        <div>
+        <div className="volunteers-actions">
           <CreateVolunteer />
+          <input type="text" className="search-input" value={firstname} placeholder="Recherche un.e bénévole"/>
+
+          <select
+            className="search-filters"
+            name="city"
+            id="city"
+            required
+            value={city_id}
+            onChange={(e) => setCity_id(e.target.value)}
+            disabled={loading}
+          >
+            <option value="">-- Sélectionnez une ville --</option>
+              {cities.map((city) => (
+                <option key={city.id} value={city.id}>
+                {city.name}
+            </option>
+              ))}
+          </select>
         </div>
         <div className="volunteers-list">
           {volunteers.length > 0 ? (
