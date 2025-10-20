@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import CreateVolunteer from "./CreateVolunteer";
 import VolunteersFilters from "./VolunteersFilters.jsx";
+import { useNavigate } from "react-router";
 
 function GetVolunteers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
