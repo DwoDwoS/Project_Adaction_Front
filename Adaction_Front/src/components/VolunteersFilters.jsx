@@ -1,4 +1,4 @@
-function VolunteersFilters({ searchTerm, setSearchTerm, city_id, setCity_id, cities, loading }) {
+function VolunteersFilters({ searchTerm, setSearchTerm, location, setLocation, locations }) {
   return (
     <div className="volunteers-filters flex gap-4 items-center">
       <input 
@@ -11,16 +11,15 @@ function VolunteersFilters({ searchTerm, setSearchTerm, city_id, setCity_id, cit
 
       <select
         className="search-filters"
-        name="city"
-        id="city"
-        value={city_id}
-        onChange={(e) => setCity_id(e.target.value)}
-        disabled={loading}
+        name="location"
+        id="location"
+        value={location}
+        onChange={(e) => setLocation(e.target.value)}
       >
         <option value="">-- Sélectionnez une ville --</option>
-        {cities.map((city) => (
-          <option key={city.id} value={city.id}>
-            {city.name}
+        {locations.map((loc) => (
+          <option key={loc} value={loc}>
+            {loc}
           </option>
         ))}
       </select>

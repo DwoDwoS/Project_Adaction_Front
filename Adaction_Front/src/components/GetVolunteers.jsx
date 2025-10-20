@@ -4,8 +4,7 @@ import VolunteersFilters from "./VolunteersFilters.jsx";
 
 function GetVolunteers() {
   const [volunteers, setVolunteers] = useState([]);
-  const [cities, setCities] = useState([]);
-  const [city_id, setCity_id] = useState("");
+  const [location, setLocation] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
@@ -20,33 +19,22 @@ function GetVolunteers() {
       .catch((err) => console.error("Erreur de fetch :", err));
   }, []);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/cities")
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur : " + res.status);
-        return res.json();
-      })
-      .then((data) => setCities(data))
-      .catch((err) => console.error("Erreur de fetch cities :", err));
-  }, []);
-
+  const locations = useMemo(() => {
+    const unique = [...new Set(volunteers.map((v) => v.location).filter(Boolean))];
+    return unique.sort();
+  }, [volunteers]);
+  
   const filteredVolunteers = useMemo(() => {
-    return volunteers.filter((volunteer) => {
+    return volunteers.filter((v) => {
       const matchesSearch = searchTerm === "" || 
-        volunteer.firstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        volunteer.lastname?.toLowerCase().includes(searchTerm.toLowerCase());
+        v.firstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.lastname?.toLowerCase().includes(searchTerm.toLowerCase());
 
-      let matchesCity = true;
-        if (city_id && city_id !== "") {
-          const selectedCity = cities.find(city => city.id.toString() === city_id);
-          if (selectedCity) {
-            matchesCity = volunteer.location === selectedCity.name;
-          }
-        }
+      const matchesLocation = location === "" || v.location === location;
 
-      return matchesSearch && matchesCity;
+      return matchesSearch && matchesLocation;
     });
-  }, [volunteers, searchTerm, city_id, cities]);
+  }, [volunteers, searchTerm, location]);
 
   return (
     <main className="main-content">
@@ -56,9 +44,9 @@ function GetVolunteers() {
           <VolunteersFilters 
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
-            city_id={city_id}
-            setCity_id={setCity_id}
-            cities={cities}
+            location={location}
+            setLocation={setLocation}
+            locations={locations}
             />
         </div>
         <div className="volunteers-list">
