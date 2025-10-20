@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import CreateVolunteer from "./CreateVolunteer";
+import VolunteersFilters from "./VolunteersFilters.jsx";
 import { useNavigate } from "react-router";
-import CreateVolunteer from "./CreateVolunteer.jsx";
 
 function GetVolunteers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [volunteers, setVolunteers] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [volunteerId, setVolunteerId] = useState(null);
   const [volunteerName, setVolunteerName] = useState("");
   const [firstname, setFirstname] = useState("");
@@ -118,45 +120,40 @@ function GetVolunteers() {
       .catch((err) => console.error("Erreur de fetch :", err));
   }, []);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/cities")
-      .then((res) => {
-        if (!res.ok) throw new Error("Erreur serveur : " + res.status);
-        return res.json();
-      })
-      .then((data) => setCities(data))
-      .catch((err) => console.error("Erreur de fetch cities :", err));
-  }, []);
+  const locations = useMemo(() => {
+    const unique = [...new Set(volunteers.map((v) => v.location).filter(Boolean))];
+    return unique.sort();
+  }, [volunteers]);
+  
+  const filteredVolunteers = useMemo(() => {
+    return volunteers.filter((v) => {
+      const matchesSearch = searchTerm === "" || 
+        v.firstname?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        v.lastname?.toLowerCase().includes(searchTerm.toLowerCase());
+
+      const matchesLocation = location === "" || v.location === location;
+
+      return matchesSearch && matchesLocation;
+    });
+  }, [volunteers, searchTerm, location]);
 
   return (
     <main className="main-content">
       <div className="card">
         <div className="volunteers-actions">
           <CreateVolunteer />
-          <input type="text" className="search-input" value={firstname} placeholder="Recherche un.e bénévole"/>
-
-          <select
-            className="search-filters"
-            name="city"
-            id="city"
-            required
-            value={city_id}
-            onChange={(e) => setCity_id(e.target.value)}
-            disabled={loading}
-          >
-            <option value="">-- Sélectionnez une ville --</option>
-              {cities.map((city) => (
-                <option key={city.id} value={city.id}>
-                {city.name}
-            </option>
-              ))}
-          </select>
+          <VolunteersFilters 
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            location={location}
+            setLocation={setLocation}
+            locations={locations}
+            />
         </div>
         <div className="volunteers-list">
-          {volunteers.length > 0 ? (
-            volunteers.map((v) => (
-              <div key={v.id}>
-                <div className="volunteer-item">
+          {filteredVolunteers.length > 0 ? (
+            filteredVolunteers.map((v) => (
+              <div key={v.id} className="volunteer-item">
                   <div className="volunteer-info">
                     <h3>
                       {v.firstname} {v.lastname}
@@ -217,11 +214,13 @@ function GetVolunteers() {
                       </svg>
                     </button>
                   </div>
-                </div>
               </div>
             ))
           ) : (
-            <p>Aucun bénévole trouvé.</p>
+            <p>
+              {filteredVolunteers.length === 0 
+                ? "Aucun bénévole trouvé." 
+                : "Aucun bénévole ne correspond aux critères de recherche."}</p>
           )}
           {isModalOpen && (
             <div className="modal-overlay" onClick={handleClose}>
