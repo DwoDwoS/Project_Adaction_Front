@@ -271,7 +271,7 @@ function GetVolunteers() {
                   />
                   <label>Email</label>
                   <input
-                    type="text"
+                    type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
