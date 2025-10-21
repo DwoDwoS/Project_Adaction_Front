@@ -63,7 +63,6 @@ function PutVolunteer() {
 
       const data = await response.json();
       setVolunteer(data);
-      console.log("Utilisateur mis à jour");
 
       navigate("/profil");
     } catch (error) {

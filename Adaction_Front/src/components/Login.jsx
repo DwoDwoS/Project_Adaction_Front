@@ -35,8 +35,6 @@ function Login() {
       sessionStorage.setItem('volunteerId', data.id)
       sessionStorage.setItem('volunteerName', data.name || username)
       sessionStorage.setItem('isAuthenticated', 'true')
-
-      console.log(`Bienvenue ${username}`)
       
       navigate('/dashboard')
     } catch (err) {
