@@ -1,4 +1,4 @@
-import { useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import "/src/App.css";
 function PutVolunteer() {
@@ -38,7 +38,6 @@ function PutVolunteer() {
       .catch((err) => console.error("Erreur de fetch volunteers :", err));
   }, [volunteerId]);
 
-  //   console.log(setVolunteer);
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -106,9 +105,8 @@ function PutVolunteer() {
           <div>
             <label className="form-label">Mot de passe</label>
             <input
-              type="text"
+              type="password"
               placeholder="Votre mot de passe"
-              // value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>

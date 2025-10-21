@@ -117,7 +117,6 @@ function Dashboard() {
       <div className="card">
         <div className="dashboard-header">
           <h2 className="card-header">Bonjour {volunteerName} !</h2>
-          {/* <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}> */}
           <div className="month-navigation">
             <button
               className="month-nav-btn"
@@ -163,7 +162,6 @@ function Dashboard() {
               </svg>
             </button>
           </div>
-          {/* </div> */}
         </div>
 
         {error && (

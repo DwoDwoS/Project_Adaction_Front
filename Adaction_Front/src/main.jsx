@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router";
-import "./index.css";
+import "./App.css";
 
 import Login from "./components/Login.jsx";
 import Dashboard from "./components/Dashboard.jsx";
