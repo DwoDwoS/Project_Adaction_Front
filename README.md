@@ -17,6 +17,7 @@ node --version
 npm --version
 git --version
 ```
+Vous aurez également besoin du côté back-end sur le repository de mon collaborateur: https://github.com/Hellyes31/Projet_Adaction_API
 
 ## Installation
 
