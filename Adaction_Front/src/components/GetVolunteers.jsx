@@ -57,50 +57,48 @@ function GetVolunteers() {
   };
 
   const handleUpdate = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const requestOptions = {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        firstname,
-        lastname,
-        location,
-        email,
-        password,
-      }),
-    };
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/api/volunteers/${volunteerId}`,
-        requestOptions
-      );
-      if (!response.ok) throw new Error("Erreur lors de la mise à jour");
-
-      const data = await response.json();
-      await fetch("http://localhost:8080/api/volunteers")
-        .then((res) => res.json())
-        .then((data) =>
-          setVolunteers(Array.isArray(data) ? data : data.volunteers || [])
-        );
-      setSuccessMessage(
-        `Le bénévole ${firstname} ${lastname} a bien été modifié !`
-      );
-
-      setTimeout(() => {
-        handleClose();
-      }, 2000);
-
-      navigate("/manageVolunteers");
-      await fetch("http://localhost:8080/api/volunteers")
-        .then((res) => res.json())
-        .then((data) => setVolunteers(data));
-    } catch (error) {
-      console.error("Erreur lors de l'ajout:", error);
-      setSuccessMessage("Une erreur s'est produite lors de la modification.");
-    }
+  const requestOptions = {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      firstname,
+      lastname,
+      location,
+      email,
+      password,
+    }),
   };
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/api/volunteers/${volunteerId}`,
+      requestOptions
+    );
+    
+    if (!response.ok) {
+      throw new Error("Erreur lors de la mise à jour");
+    }
+
+    const volunteersResponse = await fetch("http://localhost:8080/api/volunteers");
+    const volunteersData = await volunteersResponse.json();
+    setVolunteers(Array.isArray(volunteersData) ? volunteersData : volunteersData.volunteers || []);
+
+    setSuccessMessage(
+      `Le bénévole ${firstname} ${lastname} a bien été modifié !`
+    );
+
+    setTimeout(() => {
+      handleClose();
+      navigate("/manageVolunteers");
+    }, 2000);
+
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour:", error);
+    setSuccessMessage("Une erreur s'est produite lors de la modification.");
+  }
+};
 
   const handleClose = () => {
     setIsModalOpen(false);
@@ -280,7 +278,7 @@ function GetVolunteers() {
                   />
                   <label>Mot de passe</label>
                   <input
-                    type="text"
+                    type="password"
                     required
                     onChange={(e) => setPassword(e.target.value)}
                   />

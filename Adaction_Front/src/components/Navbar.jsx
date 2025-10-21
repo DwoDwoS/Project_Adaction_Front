@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import '/src/App.css'
 
 function Navbar(){
@@ -90,5 +89,4 @@ function Navbar(){
 </nav>
 );
 }
-export default Navbar
-
+export default Navbar;

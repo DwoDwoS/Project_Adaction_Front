@@ -3,10 +3,10 @@ import "/src/App.css";
 
 function CreateDonation() {
   const [associations, setAssociations] = useState([]);
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [points, setPoints] = useState();
-  const [image, setImage] = useState("");
+  // const [name, setName] = useState("");
+  // const [description, setDescription] = useState("");
+  // const [points, setPoints] = useState();
+  // const [image, setImage] = useState("");
   const association1 = associations.find((a) => a.id === 1);
   const association2 = associations.find((a) => a.id === 2);
   const association3 = associations.find((a) => a.id === 3);
@@ -23,8 +23,6 @@ function CreateDonation() {
       .then((data) => setAssociations(data))
       .catch((err) => console.error("Erreur de fetch :", err));
   }, []);
-
-  //Requête PUT à faire
 
   return (
     <div className="main-content">
@@ -54,7 +52,7 @@ function CreateDonation() {
             <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
           </svg>
           <span>
-            Points collectés :{/* Mettre les points de l'id qui s'est login */}
+            Points collectés :
           </span>
         </div>
         <div className="association-grid">
