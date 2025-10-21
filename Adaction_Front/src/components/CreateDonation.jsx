@@ -3,6 +3,7 @@ import "/src/App.css";
 
 function CreateDonation() {
   const [associations, setAssociations] = useState([]);
+  // In case we need these later for game logic with donations points.
   // const [name, setName] = useState("");
   // const [description, setDescription] = useState("");
   // const [points, setPoints] = useState();
