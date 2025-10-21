@@ -13,8 +13,7 @@ function CreateVolunteer() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const volunteersForm = { firstname, lastname, email, password, location };
-    console.log(volunteersForm);
-
+    
     fetch("http://localhost:8080/api/volunteers", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
