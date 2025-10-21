@@ -23,6 +23,7 @@ function CreateCollect() {
   const labelId3 = wastes_types.find((type) => type.id === 3)?.label;
   const labelId4 = wastes_types.find((type) => type.id === 5)?.label;
   const labelId5 = wastes_types.find((type) => type.id === 6)?.label;
+  const today = new Date().toISOString().split("T")[0];
   const increment = (setter, value) => setter(Number(value) + 1);
   const decrement = (setter, value) => setter(Math.max(0, Number(value) - 1));
   useEffect(() => {
@@ -140,7 +141,7 @@ function CreateCollect() {
                   <label className="form-label">Date *</label>
                   <input
                     type="date"
-                    value={date}
+                    value={today}
                     disabled={loading}
                     onChange={(e) => setDate(e.target.value)}
                     required
