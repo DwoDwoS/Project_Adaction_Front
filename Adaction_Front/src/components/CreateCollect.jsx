@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import API_URL, { API_ENDPOINTS } from "../config/api";
+import { API_ENDPOINTS } from "../config/api";
 import "/src/App.css";
 
 function CreateCollect() {
@@ -74,14 +74,13 @@ function CreateCollect() {
 
     const collectForm = {
       date,
-      wastes_types,
       city_id: Number(city_id),
       glass_nb: Number(glass_nb),
       butt_nb: Number(butt_nb),
       plastic_nb: Number(plastic_nb),
       electronics_nb: Number(electronics_nb),
       others_nb: Number(others_nb),
-      volunteer: { id: Number(volunteer) },
+      volunteer_id: Number(volunteer),
     };
 
     console.log("Données envoyées :", JSON.stringify(collectForm));
@@ -94,13 +93,15 @@ function CreateCollect() {
       });
 
       if (!response.ok) {
+        const errorData = await response.text();
+        console.error("Erreur serveur:", errorData);
         throw new Error("Erreur lors de l'enregistrement de la collecte");
       }
 
       await response.json();
       console.log("Nouvelle collecte ajoutée");
       setSuccess(true);
-      setDate("");
+      setDate(today);
       setCity_id("");
       setGlass_nb(0);
       setButt_nb(0);
@@ -109,7 +110,7 @@ function CreateCollect() {
       setOthers_nb(0);
 
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/collects");
       }, 2000);
     } catch (err) {
       console.error("Erreur POST :", err);
