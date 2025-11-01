@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import API_URL from "../config/api";
 
 function Dashboard() {
   const [wasteData, setWasteData] = useState({
@@ -59,7 +60,7 @@ function Dashboard() {
       const month = date.getMonth() + 1;
 
       const response = await fetch(
-        `http://localhost:8080/api/collects/monthly?year=${year}&month=${month}&volunteerId=${volId}`
+        `${API_URL}/api/collects/monthly?year=${year}&month=${month}&volunteerId=${volId}`
       );
 
       if (!response.ok) {
@@ -111,6 +112,14 @@ function Dashboard() {
       return newDate;
     });
   };
+
+  const wasteTypes = [
+    { key: "verre", label: "Verres", icon: "🍾" },
+    { key: "cigarettes", label: "Mégots de cigarettes", icon: "🚬" },
+    { key: "plastique", label: "Plastique", icon: "♻️" },
+    { key: "electronique", label: "Électronique", icon: "🔌" },
+    { key: "autre", label: "Autres", icon: "🗑️" },
+  ];
 
   return (
     <div className="main-content">
@@ -165,64 +174,43 @@ function Dashboard() {
         </div>
 
         {error && (
-          <div
-            className="error-message"
-            style={{ color: "red", padding: "1rem", marginBottom: "1rem" }}
-          >
+          <div className="alert alert-error" style={{ marginBottom: "1rem" }}>
             Erreur: {error}
           </div>
         )}
 
-        <div className="waste-grid">
-          <div className="waste-card">
-            <div className="waste-info">
-              <h3>Verres</h3>
-              <p className="waste-count">
-                {loading ? "Chargement..." : `${wasteData.verre} collectés`}
-              </p>
-            </div>
+        {loading ? (
+          <div className="loading-state" style={{ padding: "2rem", textAlign: "center" }}>
+            <p>Chargement des données...</p>
           </div>
+        ) : (
+          <div className="waste-grid">
+            {wasteTypes.map(({ key, label, icon }) => (
+              <div key={key} className="waste-card">
+                <div className="waste-info">
+                  <h3>
+                    <span style={{ marginRight: "0.5rem" }}>{icon}</span>
+                    {label}
+                  </h3>
+                  <p className="waste-count">
+                    {wasteData[key]} collecté{wasteData[key] > 1 ? "s" : ""}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
 
-          <div className="waste-card">
-            <div className="waste-info">
-              <h3>Mégots de cigarettes</h3>
-              <p className="waste-count">
-                {loading
-                  ? "Chargement..."
-                  : `${wasteData.cigarettes} collectés`}
-              </p>
-            </div>
+        {!loading && !error && (
+          <div className="dashboard-summary" style={{ marginTop: "1.5rem", padding: "1rem", backgroundColor: "#f8f9fa", borderRadius: "8px" }}>
+            <h3 style={{ marginBottom: "0.5rem", fontSize: "1.1rem" }}>
+              Total du mois
+            </h3>
+            <p style={{ fontSize: "1.5rem", fontWeight: "bold", color: "#4CAF50" }}>
+              {Object.values(wasteData).reduce((acc, val) => acc + val, 0)} déchets collectés
+            </p>
           </div>
-
-          <div className="waste-card">
-            <div className="waste-info">
-              <h3>Plastique</h3>
-              <p className="waste-count">
-                {loading ? "Chargement..." : `${wasteData.plastique} collectés`}
-              </p>
-            </div>
-          </div>
-
-          <div className="waste-card">
-            <div className="waste-info">
-              <h3>Électronique</h3>
-              <p className="waste-count">
-                {loading
-                  ? "Chargement..."
-                  : `${wasteData.electronique} collectés`}
-              </p>
-            </div>
-          </div>
-
-          <div className="waste-card">
-            <div className="waste-info">
-              <h3>Autres</h3>
-              <p className="waste-count">
-                {loading ? "Chargement..." : `${wasteData.autre} collectés`}
-              </p>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import CreateVolunteer from "./CreateVolunteer";
 import VolunteersFilters from "./VolunteersFilters.jsx";
 import { useNavigate } from "react-router";
+import API_URL from "../config/api.js";
 
 function GetVolunteers() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -35,7 +36,7 @@ function GetVolunteers() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/volunteers/${id}`,
+        `${API_URL}/api/volunteers/${id}`,
         {
           method: "DELETE",
         }
@@ -73,7 +74,7 @@ function GetVolunteers() {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/api/volunteers/${volunteerId}`,
+      `${API_URL}/api/volunteers/${volunteerId}`,
       requestOptions
     );
     
@@ -81,7 +82,7 @@ function GetVolunteers() {
       throw new Error("Erreur lors de la mise à jour");
     }
 
-    const volunteersResponse = await fetch("http://localhost:8080/api/volunteers");
+    const volunteersResponse = await fetch(`${API_URL}/api/volunteers`);
     const volunteersData = await volunteersResponse.json();
     setVolunteers(Array.isArray(volunteersData) ? volunteersData : volunteersData.volunteers || []);
 
@@ -111,7 +112,7 @@ function GetVolunteers() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/volunteers")
+    fetch(`${API_URL}/api/volunteers`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erreur serveur : " + res.status);

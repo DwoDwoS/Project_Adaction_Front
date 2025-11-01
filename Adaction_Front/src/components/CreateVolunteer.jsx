@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { API_ENDPOINTS } from "../config/api";
 import "/src/App.css";
 
 function CreateVolunteer() {
@@ -9,29 +10,39 @@ function CreateVolunteer() {
   const [password, setPassword] = useState("");
   const [location, setLocation] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const volunteersForm = { firstname, lastname, email, password, location };
-    
-    fetch("http://localhost:8080/api/volunteers", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(volunteersForm),
-    })
-      .then(() => {
-        setSuccessMessage(
-          `Le bénévole ${firstname} ${lastname} a bien été ajouté !`
-        );
+    setLoading(true);
+    setSuccessMessage("");
 
-        setTimeout(() => {
-          handleClose();
-        }, 2000);
-      })
-      .catch((error) => {
-        console.error("Erreur lors de l'ajout:", error);
-        setSuccessMessage("Une erreur s'est produite lors de l'ajout.");
+    const volunteersForm = { firstname, lastname, email, password, location };
+
+    try {
+      const response = await fetch(API_ENDPOINTS.volunteers, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(volunteersForm),
       });
+
+      if (!response.ok) {
+        throw new Error("Erreur lors de l'ajout du bénévole");
+      }
+
+      setSuccessMessage(
+        `Le bénévole ${firstname} ${lastname} a bien été ajouté !`
+      );
+
+      setTimeout(() => {
+        handleClose();
+      }, 2000);
+    } catch (error) {
+      console.error("Erreur lors de l'ajout:", error);
+      setSuccessMessage("Une erreur s'est produite lors de l'ajout.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleClose = () => {
@@ -57,10 +68,10 @@ function CreateVolunteer() {
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="lucide lucide-user-plus"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="lucide lucide-user-plus"
           aria-hidden="true"
         >
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -78,67 +89,70 @@ function CreateVolunteer() {
 
             {successMessage && (
               <div
-                style={{
-                  padding: "12px",
-                  marginBottom: "16px",
-                  backgroundColor: successMessage.includes("erreur")
-                    ? "#fee"
-                    : "#d4edda",
-                  color: successMessage.includes("erreur") ? "#c00" : "#155724",
-                  borderRadius: "4px",
-                  border: `1px solid ${
-                    successMessage.includes("erreur") ? "#fcc" : "#c3e6cb"
-                  }`,
-                }}
+                className={`alert ${
+                  successMessage.includes("erreur") ? "alert-error" : "alert-success"
+                }`}
               >
                 {successMessage}
               </div>
             )}
 
             <form onSubmit={handleSubmit}>
-              <label>Prénom</label>
+              <label>Prénom *</label>
               <input
                 type="text"
                 required
                 value={firstname}
                 onChange={(e) => setFirstname(e.target.value)}
+                disabled={loading}
               />
-              <label>Nom</label>
+
+              <label>Nom *</label>
               <input
                 type="text"
                 required
                 value={lastname}
                 onChange={(e) => setLastname(e.target.value)}
+                disabled={loading}
               />
-              <label>Email</label>
+
+              <label>Email *</label>
               <input
-                type="text"
+                type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
               />
-              <label>Mot de passe</label>
+
+              <label>Mot de passe *</label>
               <input
-                type="text"
+                type="password"
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                minLength="6"
               />
-              <label>Localisation</label>
+
+              <label>Localisation *</label>
               <input
                 type="text"
                 required
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                disabled={loading}
               />
+
               <div className="modal-actions">
-                <button type="submit" className="submit-btn">
-                  Ajouter
+                <button type="submit" className="submit-btn" disabled={loading}>
+                  {loading ? "Ajout en cours..." : "Ajouter"}
                 </button>
                 <button
                   type="button"
                   className="submit-btn manage-btn"
                   onClick={handleClose}
+                  disabled={loading}
                 >
                   Annuler
                 </button>

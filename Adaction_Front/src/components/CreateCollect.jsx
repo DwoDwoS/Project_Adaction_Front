@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import API_URL, { API_ENDPOINTS } from "../config/api";
 import "/src/App.css";
 
 function CreateCollect() {
@@ -18,14 +19,17 @@ function CreateCollect() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const navigate = useNavigate();
+  
   const labelId1 = wastes_types.find((type) => type.id === 1)?.label;
   const labelId2 = wastes_types.find((type) => type.id === 2)?.label;
   const labelId3 = wastes_types.find((type) => type.id === 3)?.label;
   const labelId4 = wastes_types.find((type) => type.id === 5)?.label;
   const labelId5 = wastes_types.find((type) => type.id === 6)?.label;
   const today = new Date().toISOString().split("T")[0];
+  
   const increment = (setter, value) => setter(Number(value) + 1);
   const decrement = (setter, value) => setter(Math.max(0, Number(value) - 1));
+
   useEffect(() => {
     const storedVolunteerId = sessionStorage.getItem("volunteerId");
     const storedVolunteerName = sessionStorage.getItem("volunteerName");
@@ -37,23 +41,29 @@ function CreateCollect() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/cities")
+    fetch(API_ENDPOINTS.cities)
       .then((res) => {
         if (!res.ok) throw new Error("Erreur serveur : " + res.status);
         return res.json();
       })
       .then((data) => setCities(data))
-      .catch((err) => console.error("Erreur de fetch cities :", err));
+      .catch((err) => {
+        console.error("Erreur de fetch cities :", err);
+        setError("Impossible de charger les villes");
+      });
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/wastetype")
+    fetch(API_ENDPOINTS.wasteTypes)
       .then((res) => {
         if (!res.ok) throw new Error("Erreur serveur : " + res.status);
         return res.json();
       })
       .then((data) => setWastes_types(data))
-      .catch((err) => console.error("Erreur de fetch wastetype :", err));
+      .catch((err) => {
+        console.error("Erreur de fetch wastetype :", err);
+        setError("Impossible de charger les types de déchets");
+      });
   }, []);
 
   const handleSubmit = async (e) => {
@@ -77,7 +87,7 @@ function CreateCollect() {
     console.log("Données envoyées :", JSON.stringify(collectForm));
 
     try {
-      const response = await fetch("http://localhost:8080/api/collects", {
+      const response = await fetch(API_ENDPOINTS.collects, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(collectForm),
@@ -90,14 +100,13 @@ function CreateCollect() {
       await response.json();
       console.log("Nouvelle collecte ajoutée");
       setSuccess(true);
-
       setDate("");
       setCity_id("");
-      setGlass_nb("");
-      setButt_nb("");
-      setPlastic_nb("");
-      setElectronics_nb("");
-      setOthers_nb("");
+      setGlass_nb(0);
+      setButt_nb(0);
+      setPlastic_nb(0);
+      setElectronics_nb(0);
+      setOthers_nb(0);
 
       setTimeout(() => {
         navigate("/dashboard");
@@ -124,10 +133,10 @@ function CreateCollect() {
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  class="lucide lucide-circle-alert"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="lucide lucide-circle-alert"
                   aria-hidden="true"
                 >
                   <circle cx="12" cy="12" r="10"></circle>
@@ -136,17 +145,29 @@ function CreateCollect() {
                 </svg>
                 Enregistrer une collecte
               </h2>
+              {error && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                  {error}
+                </div>
+              )}
+              {success && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                  Collecte enregistrée avec succès ! Redirection...
+                </div>
+              )}
+
               <div className="form-container">
                 <div>
                   <label className="form-label">Date *</label>
                   <input
                     type="date"
-                    value={today}
+                    value={date || today}
                     disabled={loading}
                     onChange={(e) => setDate(e.target.value)}
                     required
                   />
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <svg
@@ -156,10 +177,10 @@ function CreateCollect() {
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      class="lucide lucide-map-pin text-gray-600"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-map-pin text-gray-600"
                       aria-hidden="true"
                     >
                       <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path>
@@ -185,6 +206,7 @@ function CreateCollect() {
                     ))}
                   </select>
                 </div>
+
                 <div>
                   <label className="form-label">Type de déchet *</label>
                   <div className="waste-types-grid">
@@ -209,14 +231,14 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-minus text-gray-400"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-minus text-gray-400"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
-                          </svg>{" "}
+                          </svg>
                         </button>
                         <input
                           min="0"
@@ -224,7 +246,7 @@ function CreateCollect() {
                           type="number"
                           value={butt_nb}
                           onChange={(e) => setButt_nb(Number(e.target.value))}
-                        ></input>
+                        />
                         <button
                           className="waste-type-btn"
                           type="button"
@@ -237,10 +259,10 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-plus text-gray-600"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-plus text-gray-600"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
@@ -270,14 +292,14 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-minus text-gray-400"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-minus text-gray-400"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
-                          </svg>{" "}
+                          </svg>
                         </button>
                         <input
                           min="0"
@@ -287,7 +309,7 @@ function CreateCollect() {
                           onChange={(e) =>
                             setPlastic_nb(Number(e.target.value))
                           }
-                        ></input>
+                        />
                         <button
                           className="waste-type-btn"
                           type="button"
@@ -300,10 +322,10 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-plus text-gray-600"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-plus text-gray-600"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
@@ -312,15 +334,11 @@ function CreateCollect() {
                         </button>
                       </div>
                     </div>
+
                     <div>
                       <button
                         type="button"
                         className="waste-type-btn"
-                        required
-                        placeholder="Verre"
-                        value={glass_nb}
-                        disabled={loading}
-                        min="0"
                         onClick={() => increment(setGlass_nb, glass_nb)}
                       >
                         {labelId3}
@@ -338,14 +356,14 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-minus text-gray-400"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-minus text-gray-400"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
-                          </svg>{" "}
+                          </svg>
                         </button>
                         <input
                           min="0"
@@ -353,7 +371,7 @@ function CreateCollect() {
                           type="number"
                           value={glass_nb}
                           onChange={(e) => setGlass_nb(Number(e.target.value))}
-                        ></input>
+                        />
                         <button
                           className="waste-type-btn"
                           type="button"
@@ -366,10 +384,10 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-plus text-gray-600"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-plus text-gray-600"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
@@ -382,11 +400,6 @@ function CreateCollect() {
                       <button
                         type="button"
                         className="waste-type-btn"
-                        required
-                        placeholder="Verre"
-                        value={electronics_nb}
-                        disabled={loading}
-                        min="0"
                         onClick={() =>
                           increment(setElectronics_nb, electronics_nb)
                         }
@@ -408,14 +421,14 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-minus text-gray-400"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-minus text-gray-400"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
-                          </svg>{" "}
+                          </svg>
                         </button>
                         <input
                           min="0"
@@ -425,7 +438,7 @@ function CreateCollect() {
                           onChange={(e) =>
                             setElectronics_nb(Number(e.target.value))
                           }
-                        ></input>
+                        />
                         <button
                           className="waste-type-btn"
                           type="button"
@@ -440,10 +453,10 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-plus text-gray-600"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-plus text-gray-600"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
@@ -456,11 +469,6 @@ function CreateCollect() {
                       <button
                         type="button"
                         className="waste-type-btn"
-                        required
-                        value={others_nb}
-                        onChange={(e) => setOthers_nb(e.target.value)}
-                        disabled={loading}
-                        min="0"
                         onClick={() => increment(setOthers_nb, others_nb)}
                       >
                         {labelId5}
@@ -478,14 +486,14 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-minus text-gray-400"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-minus text-gray-400"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
-                          </svg>{" "}
+                          </svg>
                         </button>
                         <input
                           min="0"
@@ -493,7 +501,7 @@ function CreateCollect() {
                           type="number"
                           value={others_nb}
                           onChange={(e) => setOthers_nb(Number(e.target.value))}
-                        ></input>
+                        />
                         <button
                           className="waste-type-btn"
                           type="button"
@@ -506,10 +514,10 @@ function CreateCollect() {
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="lucide lucide-plus text-gray-600"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="lucide lucide-plus text-gray-600"
                             aria-hidden="true"
                           >
                             <path d="M5 12h14"></path>
@@ -523,7 +531,7 @@ function CreateCollect() {
               </div>
             </div>
 
-            <button className="submit-btn" disabled={loading}>
+            <button className="submit-btn" type="submit" disabled={loading}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -531,17 +539,17 @@ function CreateCollect() {
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-save"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-save"
                 aria-hidden="true"
               >
                 <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"></path>
                 <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"></path>
                 <path d="M7 3v4a1 1 0 0 0 1 1h7"></path>
               </svg>
-              Enregistrer
+              {loading ? "Enregistrement..." : "Enregistrer"}
             </button>
           </div>
         </div>

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import API_URL from "../config/api";
 import "/src/App.css";
 
 function PutVolunteer() {
@@ -24,7 +25,7 @@ function PutVolunteer() {
 
   useEffect(() => {
     if (!volunteerId) return;
-    fetch(`http://localhost:8080/api/volunteers/${volunteerId}`)
+    fetch(`${API_URL}/api/volunteers/${volunteerId}`)
       .then((res) => {
         if (!res.ok) throw new Error("Erreur serveur : " + res.status);
         return res.json();
@@ -56,7 +57,7 @@ function PutVolunteer() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/api/volunteers/${volunteerId}`,
+        `${API_URL}/api/volunteers/${volunteerId}`,
         requestOptions
       );
       if (!response.ok) throw new Error("Erreur lors de la mise à jour");

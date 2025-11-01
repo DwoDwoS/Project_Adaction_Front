@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
+import API_URL from '../config/api';
 import '/src/App.css'
 
 function App() {
   const [wastes_types, setWastes_types] = useState([])
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/wastetype")
+    fetch(`${API_URL}/api/wastetype`)
       .then(res => {
         if (!res.ok) {
           throw new Error("Erreur serveur : " + res.status);
