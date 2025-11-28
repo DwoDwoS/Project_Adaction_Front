@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+const API_URL = import.meta.env.VITE_API_URL || '';
 export default API_URL;
 
 export const API_ENDPOINTS = {
@@ -8,4 +8,5 @@ export const API_ENDPOINTS = {
   cities: `${API_URL}/api/cities`,
   wasteTypes: `${API_URL}/api/wastetype`,
   collects: `${API_URL}/api/collects`,
+  associations: `${API_URL}/api/associations`,
 };

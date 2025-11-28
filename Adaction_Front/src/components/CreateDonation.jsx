@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "/src/App.css";
+import { API_ENDPOINTS } from "../config/api";
 
 function CreateDonation() {
   const [associations, setAssociations] = useState([]);
@@ -14,7 +15,7 @@ function CreateDonation() {
   const association4 = associations.find((a) => a.id === 4);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/associations")
+    fetch(`${API_ENDPOINTS.base}/api/associations`)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erreur serveur : " + res.status);
@@ -52,20 +53,24 @@ function CreateDonation() {
             <path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"></path>
             <path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"></path>
           </svg>
-          <span>
-            Points collectés :
-          </span>
+          <span>Points collectés :</span>
         </div>
         <div className="association-grid">
           <div className="association-card">
             <div className="association-header">
-              <span className="association-emoji">{association1 ? association1.image : "Chargement..."}</span>
+              <span className="association-emoji">
+                {association1 ? association1.image : "Chargement..."}
+              </span>
               <h3>{association1 ? association1.name : "Chargement..."}</h3>
             </div>
 
-            <p className="association-description">{association1 ? association1.description : "Chargement..."}</p>
+            <p className="association-description">
+              {association1 ? association1.description : "Chargement..."}
+            </p>
             <div className="association-footer">
-              <span className="points-required">{association1 ? association1.points : "Chargement..."} points</span>
+              <span className="points-required">
+                {association1 ? association1.points : "Chargement..."} points
+              </span>
               <button className="donate-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -88,12 +93,18 @@ function CreateDonation() {
           </div>
           <div className="association-card">
             <div className="association-header">
-              <span className="association-emoji">{association2 ? association2.image : "Chargement..."}</span>
+              <span className="association-emoji">
+                {association2 ? association2.image : "Chargement..."}
+              </span>
               <h3>{association2 ? association2.name : "Chargement..."}</h3>
             </div>
-            <p className="association-description">{association2 ? association2.description : "Chargement..."}</p>
+            <p className="association-description">
+              {association2 ? association2.description : "Chargement..."}
+            </p>
             <div className="association-footer">
-              <span className="points-required">{association2 ? association2.points : "Chargement..."} points</span>
+              <span className="points-required">
+                {association2 ? association2.points : "Chargement..."} points
+              </span>
               <button className="donate-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -116,12 +127,18 @@ function CreateDonation() {
           </div>
           <div className="association-card">
             <div className="association-header">
-              <span className="association-emoji">{association3 ? association3.image : "Chargement..."}</span>
+              <span className="association-emoji">
+                {association3 ? association3.image : "Chargement..."}
+              </span>
               <h3>{association3 ? association3.name : "Chargement..."}</h3>
             </div>
-            <p className="association-description">{association3 ? association3.description : "Chargement..."}</p>
+            <p className="association-description">
+              {association3 ? association3.description : "Chargement..."}
+            </p>
             <div className="association-footer">
-              <span className="points-required">{association3 ? association3.points : "Chargement..."} points</span>
+              <span className="points-required">
+                {association3 ? association3.points : "Chargement..."} points
+              </span>
               <button className="donate-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -144,12 +161,18 @@ function CreateDonation() {
           </div>
           <div className="association-card">
             <div className="association-header">
-              <span className="association-emoji">{association4 ? association4.image : "Chargement..."}</span>
+              <span className="association-emoji">
+                {association4 ? association4.image : "Chargement..."}
+              </span>
               <h3>{association4 ? association4.name : "Chargement..."}</h3>
             </div>
-            <p className="association-description">{association4 ? association4.description : "Chargement..."}</p>
+            <p className="association-description">
+              {association4 ? association4.description : "Chargement..."}
+            </p>
             <div className="association-footer">
-              <span className="points-required">{association4 ? association4.points : "Chargement..."} points</span>
+              <span className="points-required">
+                {association4 ? association4.points : "Chargement..."} points
+              </span>
               <button className="donate-btn">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
