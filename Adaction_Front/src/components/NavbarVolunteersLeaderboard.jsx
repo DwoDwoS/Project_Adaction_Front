@@ -1,4 +1,3 @@
-import { useState } from "react";
 import "/src/App.css";
 
 function NavbarVolunteersLeaderboard() {
